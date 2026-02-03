@@ -1,20 +1,15 @@
-
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Words.pi</title>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
-    
+    <title>Words.ri</title>
     <style>
+        /* Цвета из твоего эскиза */
         :root {
-            --chalk: #edeae5;
-            --ancient-bonsai: #73754c;
-            --muted-olive: #7c7E73;
-            --rosy-brown: #913834;
+            --muted-olive: #7C7E73;
+            --rosy-brown: #9B8384;
             --dove-grey: #686775;
             --mocha: #4B3935;
             --vanilla-cream: #F0E7D5;
@@ -23,8 +18,8 @@
         }
 
         body {
-            font-family: 'Playfair Display', serif;
-            background-color: #f8f8f8;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fcfcfc;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -32,68 +27,120 @@
             min-height: 100vh;
             padding: 10px;
             box-sizing: border-box;
-            color: var(--ancient-bonsai);
         }
 
-        .header { font-size: 32px; margin: 15px 0; font-weight: 900; }
-        .lang-menu { display: flex; gap: 8px; margin-bottom: 15px; }
+        .header { font-size: 28px; font-weight: bold; margin: 10px 0; color: var(--mocha); }
+
+        /* Кнопки языков */
+        .lang-menu { display: flex; gap: 5px; margin-bottom: 10px; }
         .lang-btn {
-            padding: 6px 14px;
-            border: 1.5px solid var(--ancient-bonsai);
+            padding: 8px 15px;
+            border: 2px solid var(--mocha);
             background: white;
             border-radius: 8px;
-            font-family: inherit;
             cursor: pointer;
-            color: var(--ancient-bonsai);
+            font-weight: bold;
+            color: var(--mocha);
         }
-        .lang-btn.active { background-color: #dcdcdc; }
+        .lang-btn.active { background-color: #d1d1d1; } /* Становится серой при нажатии */
 
         .mix-btn {
-            background: none;
-            border: 1px solid var(--ancient-bonsai);
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-family: inherit;
-            margin-bottom: 20px;
-            font-size: 14px;
+            background-color: white;
+            border: 1.5px solid var(--rosy-brown);
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 15px;
         }
 
-        .card-container { width: 100%; max-width: 320px; height: 200px; perspective: 1000px; margin-bottom: 25px; }
-        .card { width: 100%; height: 100%; position: relative; transition: 0.6s; transform-style: preserve-3d; }
+        /* Карточка */
+        .card-container {
+            width: 100%;
+            max-width: 320px;
+            height: 180px;
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+        .card {
+            width: 100%; height: 100%;
+            position: relative;
+            transition: 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
         .card.flipped { transform: rotateY(180deg); }
         .front, .back {
-            position: absolute; width: 100%; height: 100%;
-            backface-visibility: hidden; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            border-radius: 20px; background-color: var(--chalk);
-            border: 1px solid rgba(0,0,0,0.1); box-shadow: 0 8px 15px rgba(0,0,0,0.05);
-            color: var(--ancient-bonsai); padding: 20px; box-sizing: border-box;
-        }
-        .back { transform: rotateY(180deg); }
-        .word-text { font-size: 36px; text-align: center; }
-
-        .delete-btn { position: absolute; bottom: 15px; right: 15px; font-size: 18px; background: none; border: none; cursor: pointer; opacity: 0.6; }
-
-        .add-area { display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
-        .icon-btn { font-size: 28px; cursor: pointer; }
-        input { padding: 10px; width: 85px; border: 1px solid var(--ancient-bonsai); border-radius: 10px; font-family: inherit; background: var(--chalk); outline: none; }
-
-        .notebook { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 100; flex-direction: column; padding: 20px; box-sizing: border-box; font-family: inherit; }
-        .notebook-header { display: flex; justify-content: space-between; align-items: center; color: white; margin-bottom: 15px; }
-        
-        .notebook-content { flex-grow: 1; border-radius: 15px; padding: 15px; display: flex; flex-direction: column; overflow-y: auto; }
-        
-        /* НОВОЕ: Стиль для цветного редактора */
-        .editor {
+            position: absolute;
             width: 100%; height: 100%;
-            background: transparent; border: none;
-            outline: none; font-size: 18px; font-family: inherit;
-            line-height: 1.6; white-space: pre-wrap;
+            backface-visibility: hidden;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; border-radius: 15px;
+            border: 2px solid var(--mocha);
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .back { transform: rotateY(180deg); color: var(--muted-olive); }
+
+        /* Панель добавления */
+        .add-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            justify-content: center;
+        }
+        .icon-btn { font-size: 28px; cursor: pointer; }
+        input {
+            padding: 8px;
+            width: 85px;
+            border: 1.5px solid var(--dove-grey);
+            border-radius: 8px;
+            outline: none;
+        }
+        .plus-btn {
+            padding: 5px 12px;
+            border: 1.5px solid var(--mocha);
+            background: white;
+            border-radius: 5px;
+            font-weight: bold;
         }
 
-        .markers { display: flex; gap: 10px; margin-top: 10px; justify-content: center; }
-        .marker { width: 35px; height: 35px; border-radius: 50%; border: 2px solid white; cursor: pointer; }
-        .close-x { font-size: 30px; background: none; border: none; color: white; cursor: pointer; }
+        /* Тетради (Модальные окна) */
+        .notebook {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 100;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .notebook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .notebook-content {
+            flex-grow: 1;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+        textarea {
+            width: 100%; height: 100%;
+            background: transparent;
+            border: none;
+            resize: none;
+            outline: none;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        /* Стили вкладок внутри тетради */
+        .tab-menu { display: flex; gap: 5px; margin-bottom: 10px; }
+        .tab-btn { padding: 5px 10px; border-radius: 5px 5px 0 0; border: 1px solid #333; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -104,64 +151,66 @@
         <button class="lang-btn active" id="l-en" onclick="setLang('en')">Eng</button>
         <button class="lang-btn" id="l-kr" onclick="setLang('kr')">Kor</button>
         <button class="lang-btn" id="l-de" onclick="setLang('de')">Ger</button>
+        <button class="lang-btn">+</button>
     </div>
 
-    <button class="mix-btn" onclick="shuffle()">mix words</button>
+    <button class="mix-btn" onclick="shuffle()">Перемешать слова</button>
 
-    <div class="card-container" id="main-card" onclick="flipCard(event)">
-        <div class="card" id="card-inner">
-            <div class="front"><div class="word-text" id="f">Word</div></div>
-            <div class="back">
-                <div class="word-text" id="b">Слово</div>
-                <button class="delete-btn" onclick="deleteCurrentWord(event)">🗑️</button>
-            </div>
+    <div class="card-container" onclick="this.querySelector('.card').classList.toggle('flipped')">
+        <div class="card">
+            <div class="front" id="f">Word</div>
+            <div class="back" id="b">Слово</div>
         </div>
     </div>
 
     <div class="add-area">
         <span class="icon-btn" onclick="openBook('rules')">📌</span>
         <span class="icon-btn" onclick="openBook('notes')">📝</span>
-        <input id="in-f" placeholder="word">
-        <input id="in-b" placeholder="transl.">
-        <button class="lang-btn" style="font-size:20px" onclick="add()">+</button>
+        <input id="in-f" placeholder="Слово">
+        <span>→</span>
+        <input id="in-b" placeholder="Перевод">
+        <button class="plus-btn" onclick="add()">+</button>
     </div>
 
     <div id="rules-book" class="notebook" style="background-color: var(--slate-grey);">
         <div class="notebook-header">
-            <b>Rules: <span id="r-title">ENG</span></b>
-            <button class="close-x" onclick="closeBook('rules')">✕</button>
+            <b style="color: white;">Правила: <span id="r-title">ENG</span></b>
+            <button onclick="closeBook('rules')">✕</button>
+        </div>
+        <div class="tab-menu">
+            <button class="tab-btn" onclick="switchTab('rules', 'en')">E</button>
+            <button class="tab-btn" onclick="switchTab('rules', 'kr')">K</button>
+            <button class="tab-btn" onclick="switchTab('rules', 'de')">G</button>
         </div>
         <div class="notebook-content" style="background-color: var(--vanilla-cream);">
-            <div id="rules-text" class="editor" contenteditable="true" oninput="save('rules')"></div>
-        </div>
-        <div class="markers">
-            <div class="marker" style="background: var(--muted-olive)" onclick="setColor('var(--muted-olive)')"></div>
-            <div class="marker" style="background: var(--rosy-brown)" onclick="setColor('var(--rosy-brown)')"></div>
-            <div class="marker" style="background: var(--dove-grey)" onclick="setColor('var(--dove-grey)')"></div>
-            <div class="marker" style="background: black" onclick="setColor('black')"></div>
+            <textarea id="rules-text" oninput="save('rules')"></textarea>
         </div>
     </div>
 
     <div id="notes-book" class="notebook" style="background-color: var(--mocha);">
         <div class="notebook-header">
-            <b>Notes: <span id="n-title">ENG</span></b>
-            <button class="close-x" onclick="closeBook('notes')">✕</button>
+            <b style="color: white;">Заметки: <span id="n-title">ENG</span></b>
+            <button onclick="closeBook('notes')">✕</button>
+        </div>
+        <div class="tab-menu">
+            <button class="tab-btn" onclick="switchTab('notes', 'en')">E</button>
+            <button class="tab-btn" onclick="switchTab('notes', 'kr')">K</button>
+            <button class="tab-btn" onclick="switchTab('notes', 'de')">G</button>
         </div>
         <div class="notebook-content" style="background-color: var(--warm-cream);">
-            <div id="notes-text" class="editor" contenteditable="true" oninput="save('notes')"></div>
-        </div>
-        <div class="markers">
-            <div class="marker" style="background: var(--muted-olive)" onclick="setColor('var(--muted-olive)')"></div>
-            <div class="marker" style="background: var(--rosy-brown)" onclick="setColor('var(--rosy-brown)')"></div>
-            <div class="marker" style="background: var(--dove-grey)" onclick="setColor('var(--dove-grey)')"></div>
-            <div class="marker" style="background: black" onclick="setColor('black')"></div>
+            <textarea id="notes-text" oninput="save('notes')"></textarea>
         </div>
     </div>
 
     <script>
-        let data = JSON.parse(localStorage.getItem('wordsPI_v3')) || { en: [{f:"Cloud", b:"Облако"}], kr: [], de: [] };
-        let storage = JSON.parse(localStorage.getItem('textPI_v3')) || { rules: {en:"", kr:"", de:""}, notes: {en:"", kr:"", de:""} };
-        let curL = 'en', curIdx = 0;
+        let data = JSON.parse(localStorage.getItem('wordsPI')) || {
+            en: [{f:"Word", b:"Слово"}], kr: [{f:"Hana", b:"Один"}], de: [{f:"Und", b:"И"}]
+        };
+        let storage = JSON.parse(localStorage.getItem('textPI')) || {
+            rules: {en:"", kr:"", de:""}, notes: {en:"", kr:"", de:""}
+        };
+        
+        let curL = 'en', curIdx = 0, bookTab = 'en';
 
         function setLang(l) {
             curL = l; curIdx = 0;
@@ -171,19 +220,12 @@
         }
 
         function update() {
-            document.getElementById('card-inner').classList.remove('flipped');
-            if (data[curL].length === 0) {
-                document.getElementById('f').innerText = "...";
-                document.getElementById('b').innerText = "Empty";
-            } else {
+            const card = document.querySelector('.card');
+            card.classList.remove('flipped');
+            setTimeout(() => {
                 document.getElementById('f').innerText = data[curL][curIdx].f;
                 document.getElementById('b').innerText = data[curL][curIdx].b;
-            }
-        }
-
-        function flipCard(e) {
-            if (e.target.closest('.delete-btn')) return;
-            document.getElementById('card-inner').classList.toggle('flipped');
+            }, 200);
         }
 
         function shuffle() {
@@ -195,40 +237,29 @@
             let f = document.getElementById('in-f').value, b = document.getElementById('in-b').value;
             if(f && b) {
                 data[curL].push({f, b});
-                localStorage.setItem('wordsPI_v3', JSON.stringify(data));
+                localStorage.setItem('wordsPI', JSON.stringify(data));
                 document.getElementById('in-f').value = ''; document.getElementById('in-b').value = '';
-                curIdx = data[curL].length - 1; update();
-            }
-        }
-
-        function deleteCurrentWord(e) {
-            e.stopPropagation();
-            if (confirm("Удалить слово?")) {
-                data[curL].splice(curIdx, 1);
-                if (curIdx >= data[curL].length) curIdx = 0;
-                localStorage.setItem('wordsPI_v3', JSON.stringify(data));
-                update();
+                alert('Слово добавлено!');
             }
         }
 
         function openBook(type) {
             document.getElementById(type+'-book').style.display = 'flex';
-            document.getElementById(type === 'rules' ? 'r-title' : 'n-title').innerText = curL.toUpperCase();
-            document.getElementById(type+'-text').innerHTML = storage[type][curL];
+            switchTab(type, curL);
         }
-
         function closeBook(type) { document.getElementById(type+'-book').style.display = 'none'; }
 
+        function switchTab(type, l) {
+            bookTab = l;
+            document.getElementById(type === 'rules' ? 'r-title' : 'n-title').innerText = l.toUpperCase();
+            document.getElementById(type+'-text').value = storage[type][l];
+        }
+
         function save(type) {
-            storage[type][curL] = document.getElementById(type+'-text').innerHTML;
-            localStorage.setItem('textPI_v3', JSON.stringify(storage));
+            storage[type][bookTab] = document.getElementById(type+'-text').value;
+            localStorage.setItem('textPI', JSON.stringify(storage));
         }
-
-        // Новая функция: красит выделенный текст
-        function setColor(color) {
-            document.execCommand('foreColor', false, color);
-        }
-
-        setLang('en');
     </script>
 </body>
+</html>
+
