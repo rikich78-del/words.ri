@@ -1,323 +1,268 @@
-<div class="header">words.ri</div>
-
-<div class="lang-menu">
-    <button id="l-en" class="active" onclick="setLang('en')">Eng.</button>
-    <button id="l-kr" onclick="setLang('kr')">Kor.</button>
-    <button id="l-de" onclick="setLang('de')">Ger.</button>
-    <button onclick="alert('Добавить новый язык?')">+</button>
-</div>
-
-<button class="shuffle-btn" onclick="shuffleWords()">🎲mix</button>
-
-<div class="card-container" onclick="this.querySelector('.card').classList.toggle('flipped')">
-    <div class="card">
-        <div class="front" id="word-f">Word</div>
-        <div class="back" id="word-b">Слово</div>
-    </div>
-</div>
-
-<div class="add-word-area">
-    <div class="icons-group">
-        <div class="icon-btn" onclick="toggleNotes()">📜</div>
-        <div class="icon-btn" onclick="toggleRules()">📌</div>
-    </div>
-    
-    <input id="in-f" placeholder="слово">
-    <span class="arrow">→</span>
-    <input id="in-b" placeholder="перевод">
-    <button class="add-btn" onclick="addNewWord()">+</button>
-</div>
-
-<div id="modal" class="notes-modal">
-    <div class="notes-header">
-        <span>Заметки (<span id="note-lang">EN</span>)</span>
-        <button onclick="toggleNotes()">✕</button>
-    </div>
-    <div class="notes-content">
-        <textarea id="note-area" oninput="saveNote()"></textarea>
-    </div>
-    <div class="lang-menu">
-        <button onclick="switchNoteLang('en')">Eng</button>
-        <button onclick="switchNoteLang('kr')">Kor</button>
-        <button onclick="switchNoteLang('de')">Ger</button>
-    </div>
-</div>
-
-<div id="rules-modal" class="notes-modal">
-    <div class="notes-header">
-        <span>Правила (<span id="rule-lang">EN</span>)</span>
-        <button onclick="toggleRules()">✕</button>
-    </div>
-    <div class="notes-content">
-        <textarea id="rule-area" oninput="saveRule()"></textarea>
-    </div>
-    <div class="lang-menu">
-        <button onclick="switchRuleLang('en')">Eng</button>
-        <button onclick="switchRuleLang('kr')">Kor</button>
-        <button onclick="switchRuleLang('de')">Ger</button>
-    </div>
-</div>
-:root {
-  --main-color: #4a90e2;
-  --bg-color: #f5f7fa;
-}
-
-body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--bg-color);
-  margin: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-height: 100vh;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.header {
-  font-weight: bold;
-  font-size: 32px;
-  color: #333;
-  margin-bottom: 10px;
-}
-
-.lang-menu {
-  display: flex;
-  gap: 8px;
-  margin-bottom: 15px;
-}
-
-.lang-menu button, .shuffle-btn, .add-btn {
-  padding: 8px 16px;
-  border: 2px solid #333;
-  background: white;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: 0.2s;
-}
-
-.active {
-  background: var(--main-color) !important;
-  color: white;
-}
-
-.card-container {
-  width: 100%;
-  max-width: 300px;
-  height: 200px;
-  perspective: 1000px;
-  margin: 20px 0;
-}
-
-.card {
-  width: 100%;
-  height: 100%;
-  position: relative;
-  transition: 0.50s;
-  transform-style: preserve-3d;
-}
-
-.flipped {
-  transform: rotateY(180deg);
-}
-
-.front, .back {
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  backface-visibility: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  border-radius: 20px;
-  background: white;
-  box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-  border: 2px solid #333;
-  box-sizing: border-box;
-}
-
-.back {
-  transform: rotateY(180deg);
-  color: var(--main-color);
-}
-
-.add-word-area {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-add-word-area {
-  display: flex;
-  flex-direction: row; /* Всё в ряд */
-  align-items: center; /* Центрируем по вертикали */
-  justify-content: center;
-  gap: 8px; /* Расстояние между всеми элементами */
-  margin-top: 20px;
-  width: 100%;
-}
-
-.icons-group {
-  display: flex;
-  gap: 5px; /* Расстояние между книгой и ручкой */
-}
-
-.icon-btn {
-  font-size: 25px;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.icon-btn:active {
-  transform: scale(0.9); /* Эффект нажатия */
-}
-
-.add-word-area input {
-  padding: 8px;
-  width: 80px; /* Немного уменьшил, чтобы всё влезло в ряд на телефоне */
-  border: 2px solid #333;
-  border-radius: 10px;
-  font-size: 14px;
-}
-
-.arrow {
-  font-weight: bold;
-  font-size: 18px;
-}
-
-/* Модальное окно заметок */
-.notes-modal {
-  display: none;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: white;
-  z-index: 100;
-  flex-direction: column;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.notes-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 20px;
-  font-weight: bold;
-  border-bottom: 2px solid #333;
-  padding-bottom: 10px;
-}
-
-textarea {
-  width: 100%;
-  height: 300px;
-  border: none;
-  font-size: 18px;
-  padding: 10px;
-  background: #fffdf0;
-  resize: none;
-  outline: none;
-}
-// Загружаем данные из памяти телефона или создаем стандартные
-let data = JSON.parse(localStorage.getItem('wData')) || {
-    en: [{f:"vegetarians", b:"Вегетарианцы"}], 
-    kr: [{f:"확률", b:"Вероятность"}], 
-    de: [{f:"das Kind", b:"Ребёнок"}]
-};
-
-let notes = JSON.parse(localStorage.getItem('wNotes')) || { en: "", kr: "", de: "" };
-let curLang = 'en', curIdx = 0, noteLang = 'en';
-
-// Смена языка карточек
-function setLang(l) {
-    curLang = l; 
-    curIdx = 0;
-    document.querySelectorAll('.lang-menu button').forEach(b => b.classList.remove('active'));
-    const btn = document.getElementById('l-' + l);
-    if(btn) btn.classList.add('active');
-    updateCard();
-}
-
-function updateCard() {
-    document.querySelector('.card').classList.remove('flipped');
-    setTimeout(() => {
-        document.getElementById('word-f').innerText = data[curLang][curIdx].f;
-        document.getElementById('word-b').innerText = data[curLang][curIdx].b;
-    }, 200);
-}
-
-function shuffleWords() {
-    data[curLang].sort(() => Math.random() - 0.5);
-    curIdx = 0;
-    updateCard();
-}
-
-function addNewWord() {
-    const f = document.getElementById('in-f').value;
-    const b = document.getElementById('in-b').value;
-    if(f && b) {
-        data[curLang].push({f, b});
-        localStorage.setItem('wData', JSON.stringify(data));
-        document.getElementById('in-f').value = '';
-        document.getElementById('in-b').value = '';
-        alert('Слово добавлено!');
-    }
-}
-
-// Функции для заметок (Книги)
-function toggleNotes() {
-    const m = document.getElementById('modal');
-    m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
-    switchNoteLang(curLang);
-}
-
-function switchNoteLang(l) {
-    noteLang = l;
-    document.getElementById('note-lang').innerText = l.toUpperCase();
-    document.getElementById('note-area').value = notes[l] || "";
-}
-
-function saveNote() {
-    notes[noteLang] = document.getElementById('note-area').value;
-    localStorage.setItem('wNotes', JSON.stringify(notes));
-}
-
-// Запуск при старте
-setLang('en');
-// Память для правил
-let rulesData = JSON.parse(localStorage.getItem('wRules')) || { en: "", kr: "", de: "" };
-let curRuleLang = 'en';
-
-function toggleRules() {
-    const m = document.getElementById('rules-modal');
-    m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
-    switchRuleLang(curLang); // Открываем правила того языка, который сейчас выбран
-}
-
-function switchRuleLang(l) {
-    curRuleLang = l;
-    document.getElementById('rule-lang').innerText = l.toUpperCase();
-    document.getElementById('rule-area').value = rulesData[l] || "";
-}
-
-function saveRule() {
-    rulesData[curRuleLang] = document.getElementById('rule-area').value;
-    localStorage.setItem('wRules', JSON.stringify(rulesData));
-}
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <style> /* Сюда вставь весь свой CSS из окна CodePen */ </style>
+    <title>Words.pi</title>
+    <style>
+        /* Цвета из твоего эскиза */
+        :root {
+            --muted-olive: #7C7E73;
+            --rosy-brown: #9B8384;
+            --dove-grey: #686775;
+            --mocha: #4B3935;
+            --vanilla-cream: #F0E7D5;
+            --warm-cream: #FAF3E0;
+            --slate-grey: #708090;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #fcfcfc;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .header { font-size: 28px; font-weight: bold; margin: 10px 0; color: var(--mocha); }
+
+        /* Кнопки языков */
+        .lang-menu { display: flex; gap: 5px; margin-bottom: 10px; }
+        .lang-btn {
+            padding: 8px 15px;
+            border: 2px solid var(--mocha);
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            color: var(--mocha);
+        }
+        .lang-btn.active { background-color: #d1d1d1; } /* Становится серой при нажатии */
+
+        .mix-btn {
+            background-color: white;
+            border: 1.5px solid var(--rosy-brown);
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-bottom: 15px;
+        }
+
+        /* Карточка */
+        .card-container {
+            width: 100%;
+            max-width: 320px;
+            height: 180px;
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+        .card {
+            width: 100%; height: 100%;
+            position: relative;
+            transition: 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .card.flipped { transform: rotateY(180deg); }
+        .front, .back {
+            position: absolute;
+            width: 100%; height: 100%;
+            backface-visibility: hidden;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; border-radius: 15px;
+            border: 2px solid var(--mocha);
+            background: white;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .back { transform: rotateY(180deg); color: var(--muted-olive); }
+
+        /* Панель добавления */
+        .add-area {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            width: 100%;
+            justify-content: center;
+        }
+        .icon-btn { font-size: 28px; cursor: pointer; }
+        input {
+            padding: 8px;
+            width: 85px;
+            border: 1.5px solid var(--dove-grey);
+            border-radius: 8px;
+            outline: none;
+        }
+        .plus-btn {
+            padding: 5px 12px;
+            border: 1.5px solid var(--mocha);
+            background: white;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        /* Тетради (Модальные окна) */
+        .notebook {
+            display: none;
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 100;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .notebook-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .notebook-content {
+            flex-grow: 1;
+            border-radius: 10px;
+            padding: 15px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+        }
+        textarea {
+            width: 100%; height: 100%;
+            background: transparent;
+            border: none;
+            resize: none;
+            outline: none;
+            font-size: 18px;
+            line-height: 1.5;
+        }
+
+        /* Стили вкладок внутри тетради */
+        .tab-menu { display: flex; gap: 5px; margin-bottom: 10px; }
+        .tab-btn { padding: 5px 10px; border-radius: 5px 5px 0 0; border: 1px solid #333; cursor: pointer; }
+    </style>
 </head>
 <body>
+
+    <div class="header">words.pi</div>
+
+    <div class="lang-menu">
+        <button class="lang-btn active" id="l-en" onclick="setLang('en')">Eng</button>
+        <button class="lang-btn" id="l-kr" onclick="setLang('kr')">Kor</button>
+        <button class="lang-btn" id="l-de" onclick="setLang('de')">Ger</button>
+        <button class="lang-btn">+</button>
+    </div>
+
+    <button class="mix-btn" onclick="shuffle()">Перемешать слова</button>
+
+    <div class="card-container" onclick="this.querySelector('.card').classList.toggle('flipped')">
+        <div class="card">
+            <div class="front" id="f">Word</div>
+            <div class="back" id="b">Слово</div>
+        </div>
+    </div>
+
+    <div class="add-area">
+        <span class="icon-btn" onclick="openBook('rules')">📌</span>
+        <span class="icon-btn" onclick="openBook('notes')">📝</span>
+        <input id="in-f" placeholder="Слово">
+        <span>→</span>
+        <input id="in-b" placeholder="Перевод">
+        <button class="plus-btn" onclick="add()">+</button>
+    </div>
+
+    <div id="rules-book" class="notebook" style="background-color: var(--slate-grey);">
+        <div class="notebook-header">
+            <b style="color: white;">Правила: <span id="r-title">ENG</span></b>
+            <button onclick="closeBook('rules')">✕</button>
+        </div>
+        <div class="tab-menu">
+            <button class="tab-btn" onclick="switchTab('rules', 'en')">E</button>
+            <button class="tab-btn" onclick="switchTab('rules', 'kr')">K</button>
+            <button class="tab-btn" onclick="switchTab('rules', 'de')">G</button>
+        </div>
+        <div class="notebook-content" style="background-color: var(--vanilla-cream);">
+            <textarea id="rules-text" oninput="save('rules')"></textarea>
+        </div>
+    </div>
+
+    <div id="notes-book" class="notebook" style="background-color: var(--mocha);">
+        <div class="notebook-header">
+            <b style="color: white;">Заметки: <span id="n-title">ENG</span></b>
+            <button onclick="closeBook('notes')">✕</button>
+        </div>
+        <div class="tab-menu">
+            <button class="tab-btn" onclick="switchTab('notes', 'en')">E</button>
+            <button class="tab-btn" onclick="switchTab('notes', 'kr')">K</button>
+            <button class="tab-btn" onclick="switchTab('notes', 'de')">G</button>
+        </div>
+        <div class="notebook-content" style="background-color: var(--warm-cream);">
+            <textarea id="notes-text" oninput="save('notes')"></textarea>
+        </div>
+    </div>
+
+    <script>
+        let data = JSON.parse(localStorage.getItem('wordsPI')) || {
+            en: [{f:"Word", b:"Слово"}], kr: [{f:"Hana", b:"Один"}], de: [{f:"Und", b:"И"}]
+        };
+        let storage = JSON.parse(localStorage.getItem('textPI')) || {
+            rules: {en:"", kr:"", de:""}, notes: {en:"", kr:"", de:""}
+        };
+        
+        let curL = 'en', curIdx = 0, bookTab = 'en';
+
+        function setLang(l) {
+            curL = l; curIdx = 0;
+            document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById('l-'+l).classList.add('active');
+            update();
+        }
+
+        function update() {
+            const card = document.querySelector('.card');
+            card.classList.remove('flipped');
+            setTimeout(() => {
+                document.getElementById('f').innerText = data[curL][curIdx].f;
+                document.getElementById('b').innerText = data[curL][curIdx].b;
+            }, 200);
+        }
+
+        function shuffle() {
+            data[curL].sort(() => Math.random() - 0.5);
+            curIdx = 0; update();
+        }
+
+        function add() {
+            let f = document.getElementById('in-f').value, b = document.getElementById('in-b').value;
+            if(f && b) {
+                data[curL].push({f, b});
+                localStorage.setItem('wordsPI', JSON.stringify(data));
+                document.getElementById('in-f').value = ''; document.getElementById('in-b').value = '';
+                alert('Слово добавлено!');
+            }
+        }
+
+        function openBook(type) {
+            document.getElementById(type+'-book').style.display = 'flex';
+            switchTab(type, curL);
+        }
+        function closeBook(type) { document.getElementById(type+'-book').style.display = 'none'; }
+
+        function switchTab(type, l) {
+            bookTab = l;
+            document.getElementById(type === 'rules' ? 'r-title' : 'n-title').innerText = l.toUpperCase();
+            document.getElementById(type+'-text').value = storage[type][l];
+        }
+
+        function save(type) {
+            storage[type][bookTab] = document.getElementById(type+'-text').value;
+            localStorage.setItem('textPI', JSON.stringify(storage));
+        }
+    </script>
+</body>
+    </html>
+
     <script> /* Сюда вставь весь свой JS из окна CodePen */ </script>
 </body>
 </html>
