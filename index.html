@@ -4,12 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <title>Words.pi</title>
+    <title>Words.ri</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
     <style>
-        /* Цвета из твоего эскиза */
         :root {
-            --muted-olive: #7C7E73;
-            --rosy-brown: #9B8384;
+            --chalk: #edeae5;
+            --ancient-bonsai: #73754c;
+            --muted-olive: #7c7E73;
+            --rosy-brown: #913834; /* Исправил опечатку в HEX */
             --dove-grey: #686775;
             --mocha: #4B3935;
             --vanilla-cream: #F0E7D5;
@@ -18,8 +21,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #fcfcfc;
+            font-family: 'Playfair Display', serif;
+            background-color: #f8f8f8;
             margin: 0;
             display: flex;
             flex-direction: column;
@@ -27,85 +30,97 @@
             min-height: 100vh;
             padding: 10px;
             box-sizing: border-box;
+            color: var(--ancient-bonsai);
         }
 
-        .header { font-size: 28px; font-weight: bold; margin: 10px 0; color: var(--mocha); }
+        .header { font-size: 32px; margin: 15px 0; font-weight: 900; }
 
-        /* Кнопки языков */
-        .lang-menu { display: flex; gap: 5px; margin-bottom: 10px; }
+        .lang-menu { display: flex; gap: 8px; margin-bottom: 15px; }
         .lang-btn {
-            padding: 8px 15px;
-            border: 2px solid var(--mocha);
+            padding: 6px 14px;
+            border: 1.5px solid var(--ancient-bonsai);
             background: white;
             border-radius: 8px;
+            font-family: inherit;
             cursor: pointer;
-            font-weight: bold;
-            color: var(--mocha);
+            color: var(--ancient-bonsai);
         }
-        .lang-btn.active { background-color: #d1d1d1; } /* Становится серой при нажатии */
+        .lang-btn.active { background-color: #dcdcdc; }
 
         .mix-btn {
-            background-color: white;
-            border: 1.5px solid var(--rosy-brown);
-            padding: 5px 10px;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-bottom: 15px;
+            background: none;
+            border: 1px solid var(--ancient-bonsai);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-family: inherit;
+            margin-bottom: 20px;
+            font-size: 14px;
         }
 
-        /* Карточка */
+        /* КАРТОЧКА */
         .card-container {
             width: 100%;
             max-width: 320px;
-            height: 180px;
+            height: 200px;
             perspective: 1000px;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         .card {
             width: 100%; height: 100%;
             position: relative;
             transition: 0.6s;
             transform-style: preserve-3d;
-            cursor: pointer;
         }
         .card.flipped { transform: rotateY(180deg); }
         .front, .back {
             position: absolute;
             width: 100%; height: 100%;
             backface-visibility: hidden;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 32px; border-radius: 15px;
-            border: 2px solid var(--mocha);
-            background: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            border-radius: 20px;
+            background-color: var(--chalk);
+            border: 1px solid rgba(0,0,0,0.1);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.05);
+            color: var(--ancient-bonsai);
+            padding: 20px;
+            box-sizing: border-box;
         }
-        .back { transform: rotateY(180deg); color: var(--muted-olive); }
+        .back { transform: rotateY(180deg); }
+        .word-text { font-size: 36px; text-align: center; }
 
-        /* Панель добавления */
+        /* КНОПКА УДАЛЕНИЯ */
+        .delete-btn {
+            position: absolute;
+            bottom: 15px;
+            right: 15px;
+            font-size: 18px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            opacity: 0.6;
+        }
+
+        /* ПАНЕЛЬ ДОБАВЛЕНИЯ */
         .add-area {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             width: 100%;
             justify-content: center;
         }
         .icon-btn { font-size: 28px; cursor: pointer; }
         input {
-            padding: 8px;
+            padding: 10px;
             width: 85px;
-            border: 1.5px solid var(--dove-grey);
-            border-radius: 8px;
+            border: 1px solid var(--ancient-bonsai);
+            border-radius: 10px;
+            font-family: inherit;
+            background: var(--chalk);
             outline: none;
         }
-        .plus-btn {
-            padding: 5px 12px;
-            border: 1.5px solid var(--mocha);
-            background: white;
-            border-radius: 5px;
-            font-weight: bold;
-        }
 
-        /* Тетради (Модальные окна) */
+        /* ТЕТРАДИ */
         .notebook {
             display: none;
             position: fixed;
@@ -115,18 +130,21 @@
             flex-direction: column;
             padding: 20px;
             box-sizing: border-box;
+            font-family: inherit;
         }
         .notebook-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 10px;
+            color: white;
+            margin-bottom: 15px;
         }
         .notebook-content {
             flex-grow: 1;
-            border-radius: 10px;
+            border-radius: 15px;
             padding: 15px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
         }
         textarea {
             width: 100%; height: 100%;
@@ -135,82 +153,97 @@
             resize: none;
             outline: none;
             font-size: 18px;
-            line-height: 1.5;
+            font-family: inherit;
+            line-height: 1.6;
         }
 
-        /* Стили вкладок внутри тетради */
-        .tab-menu { display: flex; gap: 5px; margin-bottom: 10px; }
-        .tab-btn { padding: 5px 10px; border-radius: 5px 5px 0 0; border: 1px solid #333; cursor: pointer; }
+        /* МАРКЕРЫ ВЫДЕЛЕНИЯ */
+        .markers {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .marker {
+            width: 30px; height: 30px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+        }
+
+        .close-x { font-size: 24px; background: none; border: none; color: white; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="header">words.pi</div>
+    <div class="header">words.ri</div>
 
     <div class="lang-menu">
         <button class="lang-btn active" id="l-en" onclick="setLang('en')">Eng</button>
         <button class="lang-btn" id="l-kr" onclick="setLang('kr')">Kor</button>
         <button class="lang-btn" id="l-de" onclick="setLang('de')">Ger</button>
-        <button class="lang-btn">+</button>
     </div>
 
-    <button class="mix-btn" onclick="shuffle()">Перемешать слова</button>
+    <button class="mix-btn" onclick="shuffle()">mix words</button>
 
-    <div class="card-container" onclick="this.querySelector('.card').classList.toggle('flipped')">
-        <div class="card">
-            <div class="front" id="f">Word</div>
-            <div class="back" id="b">Слово</div>
+    <div class="card-container" id="main-card" onclick="flipCard(event)">
+        <div class="card" id="card-inner">
+            <div class="front">
+                <div class="word-text" id="f">Word</div>
+            </div>
+            <div class="back">
+                <div class="word-text" id="b">Слово</div>
+                <button class="delete-btn" onclick="deleteCurrentWord(event)">🗑️</button>
+            </div>
         </div>
     </div>
 
     <div class="add-area">
         <span class="icon-btn" onclick="openBook('rules')">📌</span>
         <span class="icon-btn" onclick="openBook('notes')">📝</span>
-        <input id="in-f" placeholder="Слово">
-        <span>→</span>
-        <input id="in-b" placeholder="Перевод">
-        <button class="plus-btn" onclick="add()">+</button>
+        <input id="in-f" placeholder="word">
+        <input id="in-b" placeholder="transl.">
+        <button class="lang-btn" style="font-size:20px" onclick="add()">+</button>
     </div>
 
     <div id="rules-book" class="notebook" style="background-color: var(--slate-grey);">
         <div class="notebook-header">
-            <b style="color: white;">Правила: <span id="r-title">ENG</span></b>
-            <button onclick="closeBook('rules')">✕</button>
-        </div>
-        <div class="tab-menu">
-            <button class="tab-btn" onclick="switchTab('rules', 'en')">E</button>
-            <button class="tab-btn" onclick="switchTab('rules', 'kr')">K</button>
-            <button class="tab-btn" onclick="switchTab('rules', 'de')">G</button>
+            <b>Rules: <span id="r-title">ENG</span></b>
+            <button class="close-x" onclick="closeBook('rules')">✕</button>
         </div>
         <div class="notebook-content" style="background-color: var(--vanilla-cream);">
-            <textarea id="rules-text" oninput="save('rules')"></textarea>
+            <textarea id="rules-text" placeholder="записать..." oninput="save('rules')"></textarea>
+            <div class="markers">
+                <div class="marker" style="background: var(--muted-olive)" onclick="highlight('rules-text', 'var(--muted-olive)')"></div>
+                <div class="marker" style="background: var(--rosy-brown)" onclick="highlight('rules-text', 'var(--rosy-brown)')"></div>
+                <div class="marker" style="background: var(--dove-grey)" onclick="highlight('rules-text', 'var(--dove-grey)')"></div>
+            </div>
         </div>
     </div>
 
     <div id="notes-book" class="notebook" style="background-color: var(--mocha);">
         <div class="notebook-header">
-            <b style="color: white;">Заметки: <span id="n-title">ENG</span></b>
-            <button onclick="closeBook('notes')">✕</button>
-        </div>
-        <div class="tab-menu">
-            <button class="tab-btn" onclick="switchTab('notes', 'en')">E</button>
-            <button class="tab-btn" onclick="switchTab('notes', 'kr')">K</button>
-            <button class="tab-btn" onclick="switchTab('notes', 'de')">G</button>
+            <b>Notes: <span id="n-title">ENG</span></b>
+            <button class="close-x" onclick="closeBook('notes')">✕</button>
         </div>
         <div class="notebook-content" style="background-color: var(--warm-cream);">
-            <textarea id="notes-text" oninput="save('notes')"></textarea>
+            <textarea id="notes-text" placeholder="Пишите здесь..." oninput="save('notes')"></textarea>
+            <div class="markers">
+                <div class="marker" style="background: var(--muted-olive)" onclick="highlight('notes-text', 'var(--muted-olive)')"></div>
+                <div class="marker" style="background: var(--rosy-brown)" onclick="highlight('notes-text', 'var(--rosy-brown)')"></div>
+                <div class="marker" style="background: var(--dove-grey)" onclick="highlight('notes-text', 'var(--dove-grey)')"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        let data = JSON.parse(localStorage.getItem('wordsPI')) || {
-            en: [{f:"Word", b:"Слово"}], kr: [{f:"Hana", b:"Один"}], de: [{f:"Und", b:"И"}]
+        let data = JSON.parse(localStorage.getItem('wordsPI_v2')) || {
+            en: [{f:"Cloud", b:"Облако"}], kr: [{f:"Sarang", b:"Любовь"}], de: [{f:"Haus", b:"Дом"}]
         };
-        let storage = JSON.parse(localStorage.getItem('textPI')) || {
+        let storage = JSON.parse(localStorage.getItem('textPI_v2')) || {
             rules: {en:"", kr:"", de:""}, notes: {en:"", kr:"", de:""}
         };
         
-        let curL = 'en', curIdx = 0, bookTab = 'en';
+        let curL = 'en', curIdx = 0;
 
         function setLang(l) {
             curL = l; curIdx = 0;
@@ -220,12 +253,21 @@
         }
 
         function update() {
-            const card = document.querySelector('.card');
-            card.classList.remove('flipped');
+            document.getElementById('card-inner').classList.remove('flipped');
+            if (data[curL].length === 0) {
+                document.getElementById('f').innerText = "...";
+                document.getElementById('b').innerText = "Пусто";
+                return;
+            }
             setTimeout(() => {
                 document.getElementById('f').innerText = data[curL][curIdx].f;
                 document.getElementById('b').innerText = data[curL][curIdx].b;
             }, 200);
+        }
+
+        function flipCard(e) {
+            if (e.target.closest('.delete-btn')) return;
+            document.getElementById('card-inner').classList.toggle('flipped');
         }
 
         function shuffle() {
@@ -237,31 +279,59 @@
             let f = document.getElementById('in-f').value, b = document.getElementById('in-b').value;
             if(f && b) {
                 data[curL].push({f, b});
-                localStorage.setItem('wordsPI', JSON.stringify(data));
+                saveData();
                 document.getElementById('in-f').value = ''; document.getElementById('in-b').value = '';
-                alert('Слово добавлено!');
+                curIdx = data[curL].length - 1; update();
             }
         }
 
+        function deleteCurrentWord(e) {
+            e.stopPropagation();
+            if (confirm("Удалить это слово?")) {
+                data[curL].splice(curIdx, 1);
+                if (curIdx >= data[curL].length) curIdx = 0;
+                saveData(); update();
+            }
+        }
+
+        function saveData() { localStorage.setItem('wordsPI_v2', JSON.stringify(data)); }
+
         function openBook(type) {
             document.getElementById(type+'-book').style.display = 'flex';
-            switchTab(type, curL);
+            document.getElementById(type === 'rules' ? 'r-title' : 'n-title').innerText = curL.toUpperCase();
+            document.getElementById(type+'-text').value = storage[type][curL];
         }
+
         function closeBook(type) { document.getElementById(type+'-book').style.display = 'none'; }
 
-        function switchTab(type, l) {
-            bookTab = l;
-            document.getElementById(type === 'rules' ? 'r-title' : 'n-title').innerText = l.toUpperCase();
-            document.getElementById(type+'-text').value = storage[type][l];
+        function save(type) {
+            storage[type][curL] = document.getElementById(type+'-text').value;
+            localStorage.setItem('textPI_v2', JSON.stringify(storage));
         }
 
-        function save(type) {
-            storage[type][bookTab] = document.getElementById(type+'-text').value;
-            localStorage.setItem('textPI', JSON.stringify(storage));
+        // Функция для "выделения" (добавляет символы-маркеры вокруг текста)
+        function highlight(areaId, color) {
+            const area = document.getElementById(areaId);
+            const start = area.selectionStart;
+            const end = area.selectionEnd;
+            const text = area.value;
+            
+            if (start !== end) {
+                const selected = text.substring(start, end);
+                // В обычном textarea нельзя сделать цветной текст, 
+                // поэтому добавим пометку, что это слово выделено
+                area.value = text.substring(0, start) + "✨" + selected + "✨" + text.substring(end);
+                save(areaId.split('-')[0]);
+            } else {
+                alert("Сначала выдели слово, которое хочешь отметить!");
+            }
         }
+
+        setLang('en');
     </script>
 </body>
-    </html>
+</html>
+
 
     <script> /* Сюда вставь весь свой JS из окна CodePen */ </script>
 </body>
