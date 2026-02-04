@@ -4,148 +4,160 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" href="icon.png">
     <title>Words.ri</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    
     <style>
-        /* Цвета из твоего эскиза */
         :root {
-            --muted-olive: #7C7E73;
-            --rosy-brown: #9B8384;
-            --dove-grey: #686775;
-            --mocha: #4B3935;
+            --muddy-basil: #4B5D3D;
+            --steamed-milk: #F4F1E8;
+            --gateway-gray: #707070;
+            --sand-storm: #F0AA6E;
             --vanilla-cream: #F0E7D5;
-            --warm-cream: #FAF3E0;
-            --slate-grey: #708090;
+            --leafy: #A3966A;
+            --midnight-indigo: #212B42;
+            
+            /* Цвета для текста из твоего списка */
+            --emerald: #154139;
+            --egyptian: #8B5E30;
+            --axolotl: #A9A5A1;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #fcfcfc;
+            font-family: 'Playfair Display', serif;
+            background-color: var(--gateway-gray);
             margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             min-height: 100vh;
-            padding: 10px;
-            box-sizing: border-box;
+            color: var(--steamed-milk);
         }
 
-        .header { font-size: 28px; font-weight: bold; margin: 10px 0; color: var(--mocha); }
+        /* SPLASH SCREEN */
+        #splash {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #FFF6D0; /* Цвет фона из эскиза */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: opacity 0.5s;
+        }
+        .splash-logo { font-size: 40px; font-weight: 900; color: #F6939E; margin-bottom: 20px; }
 
-        /* Кнопки языков */
-        .lang-menu { display: flex; gap: 5px; margin-bottom: 10px; }
+        /* ГЛАВНЫЙ ЭКРАН */
+        .header { font-size: 32px; margin: 20px 0; font-weight: 900; color: var(--steamed-milk); }
+
+        .lang-menu { display: flex; gap: 10px; margin-bottom: 15px; }
         .lang-btn {
-            padding: 8px 15px;
-            border: 2px solid var(--mocha);
-            background: white;
-            border-radius: 8px;
+            padding: 8px 16px;
+            border: 2px solid var(--steamed-milk);
+            background: transparent;
+            border-radius: 12px;
+            color: var(--steamed-milk);
             cursor: pointer;
-            font-weight: bold;
-            color: var(--mocha);
+            font-family: inherit;
         }
-        .lang-btn.active { background-color: #d1d1d1; } /* Становится серой при нажатии */
+        .lang-btn.active { background-color: var(--muddy-basil); color: white; }
 
         .mix-btn {
-            background-color: white;
-            border: 1.5px solid var(--rosy-brown);
-            padding: 5px 10px;
-            border-radius: 5px;
+            background: #FFE7B7;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 15px;
+            color: #4B5D3D;
+            margin-bottom: 20px;
             cursor: pointer;
-            margin-bottom: 15px;
+            font-weight: bold;
         }
 
-        /* Карточка */
+        /* КАРТОЧКА */
         .card-container {
-            width: 100%;
+            width: 90%;
             max-width: 320px;
-            height: 180px;
+            height: 200px;
             perspective: 1000px;
-            margin-bottom: 20px;
+            margin-bottom: 30px;
         }
         .card {
             width: 100%; height: 100%;
             position: relative;
             transition: 0.6s;
             transform-style: preserve-3d;
-            cursor: pointer;
         }
         .card.flipped { transform: rotateY(180deg); }
         .front, .back {
             position: absolute;
             width: 100%; height: 100%;
             backface-visibility: hidden;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 32px; border-radius: 15px;
-            border: 2px solid var(--mocha);
-            background: white;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        }
-        .back { transform: rotateY(180deg); color: var(--muted-olive); }
-
-        /* Панель добавления */
-        .add-area {
             display: flex;
-            align-items: center;
-            gap: 8px;
-            width: 100%;
-            justify-content: center;
+            align-items: center; justify-content: center;
+            border-radius: 25px;
+            background-color: var(--steamed-milk);
+            color: var(--muddy-basil);
+            font-size: 36px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            padding: 20px; box-sizing: border-box;
+            text-align: center;
         }
-        .icon-btn { font-size: 28px; cursor: pointer; }
-        input {
-            padding: 8px;
-            width: 85px;
-            border: 1.5px solid var(--dove-grey);
-            border-radius: 8px;
-            outline: none;
-        }
-        .plus-btn {
-            padding: 5px 12px;
-            border: 1.5px solid var(--mocha);
-            background: white;
-            border-radius: 5px;
-            font-weight: bold;
+        .back { transform: rotateY(180deg); }
+        
+        .trash-btn {
+            position: absolute;
+            bottom: 15px; right: 15px;
+            font-size: 20px; border: none; background: none; cursor: pointer;
         }
 
-        /* Тетради (Модальные окна) */
+        /* ПАНЕЛЬ ДОБАВЛЕНИЯ */
+        .add-area { display: flex; align-items: center; gap: 8px; margin-bottom: 20px; }
+        .add-area input {
+            background: var(--steamed-milk);
+            border: 2px solid var(--muddy-basil);
+            padding: 10px; border-radius: 12px; width: 90px;
+            font-family: inherit;
+        }
+
+        /* ТЕТРАДИ */
         .notebook {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            z-index: 100;
-            flex-direction: column;
-            padding: 20px;
-            box-sizing: border-box;
+            display: none; position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 500; flex-direction: column; padding: 15px; box-sizing: border-box;
         }
-        .notebook-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
+        .nb-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+        
+        /* ВКЛАДКИ СТРАНИЦ (как в эскизе) */
+        .tabs-container { display: flex; gap: 5px; overflow-x: auto; padding-bottom: 5px; }
+        .tab {
+            padding: 5px 12px; border-radius: 10px 10px 0 0;
+            background: rgba(255,255,255,0.3); color: white; cursor: pointer; font-size: 14px;
         }
-        .notebook-content {
-            flex-grow: 1;
-            border-radius: 10px;
-            padding: 15px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
-        }
-        textarea {
-            width: 100%; height: 100%;
-            background: transparent;
-            border: none;
-            resize: none;
-            outline: none;
-            font-size: 18px;
-            line-height: 1.5;
-        }
+        .tab.active { background: white; color: black; }
 
-        /* Стили вкладок внутри тетради */
-        .tab-menu { display: flex; gap: 5px; margin-bottom: 10px; }
-        .tab-btn { padding: 5px 10px; border-radius: 5px 5px 0 0; border: 1px solid #333; cursor: pointer; }
+        .nb-content {
+            flex-grow: 1; border-radius: 0 15px 15px 15px; padding: 20px;
+            display: flex; flex-direction: column; box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .editor { flex-grow: 1; outline: none; font-size: 18px; line-height: 1.6; }
+
+        /* ЦВЕТА ТЕКСТА */
+        .markers { display: flex; gap: 15px; margin-top: 15px; justify-content: center; }
+        .marker { width: 35px; height: 35px; border-radius: 50%; border: 2px solid white; cursor: pointer; }
+
+        .btn-close { font-size: 30px; color: white; border: none; background: none; cursor: pointer; }
     </style>
 </head>
 <body>
 
-    <div class="header">words.pi</div>
+    <div id="splash">
+        <div class="splash-logo">⭐ Words.ri ⭐</div>
+        <div style="color: #69838E">Loading...</div>
+    </div>
+
+    <div class="header">words.ri</div>
 
     <div class="lang-menu">
         <button class="lang-btn active" id="l-en" onclick="setLang('en')">Eng</button>
@@ -156,110 +168,153 @@
 
     <button class="mix-btn" onclick="shuffle()">Перемешать слова</button>
 
-    <div class="card-container" onclick="this.querySelector('.card').classList.toggle('flipped')">
-        <div class="card">
-            <div class="front" id="f">Word</div>
-            <div class="back" id="b">Слово</div>
+    <div class="card-container" onclick="flip()">
+        <div class="card" id="card-inner">
+            <div class="front"><div id="f-txt">Word</div></div>
+            <div class="back">
+                <div id="b-txt">Слово</div>
+                <button class="trash-btn" onclick="delWord(event)">🗑️</button>
+            </div>
         </div>
     </div>
 
     <div class="add-area">
-        <span class="icon-btn" onclick="openBook('rules')">📌</span>
-        <span class="icon-btn" onclick="openBook('notes')">📝</span>
-        <input id="in-f" placeholder="Слово">
-        <span>→</span>
-        <input id="in-b" placeholder="Перевод">
-        <button class="plus-btn" onclick="add()">+</button>
+        <span onclick="openNB('rules')" style="font-size: 30px; cursor: pointer;">📌</span>
+        <span onclick="openNB('notes')" style="font-size: 30px; cursor: pointer;">📝</span>
+        <input id="in-f" placeholder="Contry">
+        <input id="in-b" placeholder="страна">
+        <button class="lang-btn" onclick="add()" style="background: var(--muddy-basil); color: white;">+</button>
     </div>
 
-    <div id="rules-book" class="notebook" style="background-color: var(--slate-grey);">
-        <div class="notebook-header">
-            <b style="color: white;">Правила: <span id="r-title">ENG</span></b>
-            <button onclick="closeBook('rules')">✕</button>
+    <div id="rules-book" class="notebook" style="background-color: var(--midnight-indigo);">
+        <div class="nb-header">
+            <b>Rules (<span class="lang-title"></span>)</b>
+            <button class="btn-close" onclick="closeNB('rules')">✕</button>
         </div>
-        <div class="tab-menu">
-            <button class="tab-btn" onclick="switchTab('rules', 'en')">E</button>
-            <button class="tab-btn" onclick="switchTab('rules', 'kr')">K</button>
-            <button class="tab-btn" onclick="switchTab('rules', 'de')">G</button>
-        </div>
-        <div class="notebook-content" style="background-color: var(--vanilla-cream);">
-            <textarea id="rules-text" oninput="save('rules')"></textarea>
+        <div class="tabs-container" id="rules-tabs"></div>
+        <div class="nb-content" style="background-color: #F0DAAE;"> <div id="rules-editor" class="editor" contenteditable="true" oninput="save('rules')"></div>
+            <div class="markers">
+                <div class="marker" style="background: var(--emerald)" onclick="setColor('var(--emerald)')"></div>
+                <div class="marker" style="background: var(--egyptian)" onclick="setColor('var(--egyptian)')"></div>
+                <div class="marker" style="background: var(--axolotl)" onclick="setColor('var(--axolotl)')"></div>
+            </div>
         </div>
     </div>
 
-    <div id="notes-book" class="notebook" style="background-color: var(--mocha);">
-        <div class="notebook-header">
-            <b style="color: white;">Заметки: <span id="n-title">ENG</span></b>
-            <button onclick="closeBook('notes')">✕</button>
+    <div id="notes-book" class="notebook" style="background-color: var(--midnight-indigo);">
+        <div class="nb-header">
+            <b>Notes (<span class="lang-title"></span>)</b>
+            <button class="btn-close" onclick="closeNB('notes')">✕</button>
         </div>
-        <div class="tab-menu">
-            <button class="tab-btn" onclick="switchTab('notes', 'en')">E</button>
-            <button class="tab-btn" onclick="switchTab('notes', 'kr')">K</button>
-            <button class="tab-btn" onclick="switchTab('notes', 'de')">G</button>
-        </div>
-        <div class="notebook-content" style="background-color: var(--warm-cream);">
-            <textarea id="notes-text" oninput="save('notes')"></textarea>
+        <div class="tabs-container" id="notes-tabs"></div>
+        <div class="nb-content" style="background-color: var(--vanilla-cream);">
+            <div id="notes-editor" class="editor" contenteditable="true" oninput="save('notes')"></div>
+            <div class="markers">
+                <div class="marker" style="background: var(--emerald)" onclick="setColor('var(--emerald)')"></div>
+                <div class="marker" style="background: var(--egyptian)" onclick="setColor('var(--egyptian)')"></div>
+                <div class="marker" style="background: var(--axolotl)" onclick="setColor('var(--axolotl)')"></div>
+            </div>
         </div>
     </div>
 
     <script>
-        let data = JSON.parse(localStorage.getItem('wordsPI')) || {
-            en: [{f:"Word", b:"Слово"}], kr: [{f:"Hana", b:"Один"}], de: [{f:"Und", b:"И"}]
+        // Инициализация данных
+        let words = JSON.parse(localStorage.getItem('WRI_Words')) || { en:[], kr:[], de:[] };
+        let store = JSON.parse(localStorage.getItem('WRI_Store_V5')) || {
+            rules: { en:[""], kr:[""], de:[""] },
+            notes: { en:[""], kr:[""], de:[""] }
         };
-        let storage = JSON.parse(localStorage.getItem('textPI')) || {
-            rules: {en:"", kr:"", de:""}, notes: {en:"", kr:"", de:""}
-        };
-        
-        let curL = 'en', curIdx = 0, bookTab = 'en';
+
+        let curL = 'en', curIdx = 0, curP = 0;
+
+        // Splash Screen
+        setTimeout(() => { document.getElementById('splash').style.opacity = '0'; 
+        setTimeout(() => document.getElementById('splash').style.display = 'none', 500); }, 2000);
 
         function setLang(l) {
             curL = l; curIdx = 0;
             document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('l-'+l).classList.add('active');
-            update();
+            if(document.getElementById('l-'+l)) document.getElementById('l-'+l).classList.add('active');
+            updateCard();
         }
 
-        function update() {
-            const card = document.querySelector('.card');
-            card.classList.remove('flipped');
-            setTimeout(() => {
-                document.getElementById('f').innerText = data[curL][curIdx].f;
-                document.getElementById('b').innerText = data[curL][curIdx].b;
-            }, 200);
-        }
-
-        function shuffle() {
-            data[curL].sort(() => Math.random() - 0.5);
-            curIdx = 0; update();
-        }
-
-        function add() {
-            let f = document.getElementById('in-f').value, b = document.getElementById('in-b').value;
-            if(f && b) {
-                data[curL].push({f, b});
-                localStorage.setItem('wordsPI', JSON.stringify(data));
-                document.getElementById('in-f').value = ''; document.getElementById('in-b').value = '';
-                alert('Слово добавлено!');
+        function updateCard() {
+            const list = words[curL];
+            document.getElementById('card-inner').classList.remove('flipped');
+            if (list.length === 0) {
+                document.getElementById('f-txt').innerText = "Empty";
+                document.getElementById('b-txt').innerText = "Пусто";
+            } else {
+                document.getElementById('f-txt').innerText = list[curIdx].f;
+                document.getElementById('b-txt').innerText = list[curIdx].b;
             }
         }
 
-        function openBook(type) {
-            document.getElementById(type+'-book').style.display = 'flex';
-            switchTab(type, curL);
-        }
-        function closeBook(type) { document.getElementById(type+'-book').style.display = 'none'; }
+        function flip() { document.getElementById('card-inner').classList.toggle('flipped'); }
 
-        function switchTab(type, l) {
-            bookTab = l;
-            document.getElementById(type === 'rules' ? 'r-title' : 'n-title').innerText = l.toUpperCase();
-            document.getElementById(type+'-text').value = storage[type][l];
+        function add() {
+            const f = document.getElementById('in-f').value, b = document.getElementById('in-b').value;
+            if(f && b) {
+                words[curL].push({f, b});
+                localStorage.setItem('WRI_Words', JSON.stringify(words));
+                document.getElementById('in-f').value = ''; document.getElementById('in-b').value = '';
+                curIdx = words[curL].length - 1; updateCard();
+            }
+        }
+
+        function delWord(e) {
+            e.stopPropagation();
+            if(confirm("Удалить?")) {
+                words[curL].splice(curIdx, 1);
+                curIdx = 0;
+                localStorage.setItem('WRI_Words', JSON.stringify(words));
+                updateCard();
+            }
+        }
+
+        function shuffle() {
+            words[curL].sort(() => Math.random() - 0.5);
+            curIdx = 0; updateCard();
+        }
+
+        // БЛОКНОТЫ
+        function openNB(type) {
+            document.getElementById(type+'-book').style.display = 'flex';
+            curP = 0;
+            renderTabs(type);
+            loadPage(type);
+        }
+
+        function renderTabs(type) {
+            const container = document.getElementById(type+'-tabs');
+            container.innerHTML = '';
+            store[type][curL].forEach((_, i) => {
+                const t = document.createElement('div');
+                t.className = `tab ${i === curP ? 'active' : ''}`;
+                t.innerText = 'P.' + (i+1);
+                t.onclick = () => { curP = i; renderTabs(type); loadPage(type); };
+                container.appendChild(t);
+            });
+            const plus = document.createElement('div');
+            plus.className = 'tab'; plus.innerText = '+';
+            plus.onclick = () => { store[type][curL].push(""); curP = store[type][curL].length-1; renderTabs(type); loadPage(type); };
+            container.appendChild(plus);
+        }
+
+        function loadPage(type) {
+            document.querySelectorAll('.lang-title').forEach(el => el.innerText = curL.toUpperCase());
+            document.getElementById(type+'-editor').innerHTML = store[type][curL][curP] || "";
         }
 
         function save(type) {
-            storage[type][bookTab] = document.getElementById(type+'-text').value;
-            localStorage.setItem('textPI', JSON.stringify(storage));
+            store[type][curL][curP] = document.getElementById(type+'-editor').innerHTML;
+            localStorage.setItem('WRI_Store_V5', JSON.stringify(store));
         }
+
+        function setColor(c) { document.execCommand('foreColor', false, c); }
+        function closeNB(type) { document.getElementById(type+'-book').style.display = 'none'; }
+
+        setLang('en');
     </script>
 </body>
 </html>
-
