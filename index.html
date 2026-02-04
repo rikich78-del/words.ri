@@ -77,26 +77,34 @@
         .lang-btn.active { background-color: #dcdcdc; }
         .lang-btn:active { transform: scale(0.95); }
 
-        /* БЛОК КАРТОЧКИ СО СТРЕЛКАМИ */
+        /* ГЛАВНАЯ ОБЛАСТЬ КАРТОЧКИ И СТРЕЛОК */
         .main-view {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 10px;
             width: 100%;
-            max-width: 400px;
+            max-width: 450px;
             justify-content: center;
             margin-bottom: 25px;
         }
+
         .nav-arrow {
-            background: none;
-            border: none;
-            font-size: 30px;
-            color: var(--ancient-bonsai);
+            background: var(--chalk);
+            border: 1.5px solid var(--ancient-bonsai);
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             cursor: pointer;
-            padding: 10px;
-            opacity: 0.5;
+            color: var(--ancient-bonsai);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: 0.2s;
+            flex-shrink: 0;
         }
-        .nav-arrow:hover { opacity: 1; }
+        .nav-arrow:active { transform: scale(0.9); }
 
         .card-container { width: 100%; max-width: 280px; height: 200px; perspective: 1000px; }
         .card { width: 100%; height: 100%; position: relative; transition: 0.6s; transform-style: preserve-3d; }
@@ -108,7 +116,7 @@
             box-shadow: 0 8px 15px rgba(0,0,0,0.05); padding: 20px; box-sizing: border-box;
         }
         .back { transform: rotateY(180deg); }
-        .word-text { font-size: 32px; text-align: center; word-break: break-word; }
+        .word-text { font-size: 30px; text-align: center; word-break: break-word; }
 
         .add-area { display: flex; align-items: center; gap: 10px; width: 100%; justify-content: center; }
         input { padding: 10px; width: 85px; border: 1px solid var(--ancient-bonsai); border-radius: 10px; background: var(--chalk); outline: none; font-family: inherit;}
@@ -136,7 +144,7 @@
         </div>
     </div>
 
-    <div class="header">words.ri</div>
+    <div class="header">words.pi</div>
 
     <div class="lang-menu">
         <button class="lang-btn active" id="l-en" onclick="setLang('en')">Eng</button>
@@ -149,12 +157,14 @@
     <div class="main-view">
         <button class="nav-arrow" onclick="prevWord()">&#10094;</button>
         
-        <div class="card-container" onclick="flipCard(event)">
+        <div class="card-container" id="main-card-trigger">
             <div class="card" id="card-inner">
-                <div class="front"><div class="word-text" id="f">...</div></div>
-                <div class="back">
+                <div class="front" onclick="flipCard()">
+                    <div class="word-text" id="f">...</div>
+                </div>
+                <div class="back" onclick="flipCard()">
                     <div class="word-text" id="b">...</div>
-                    <button style="position:absolute; bottom:15px; right:15px; background:none; border:none; cursor:pointer; font-size:20px;" onclick="deleteCurrentWord(event)">🗑️</button>
+                    <button style="position:absolute; bottom:15px; right:15px; background:none; border:none; cursor:pointer; font-size:22px;" onclick="deleteCurrentWord(event)">🗑️</button>
                 </div>
             </div>
         </div>
@@ -164,10 +174,10 @@
 
     <div class="add-area">
         <span style="font-size:28px; cursor:pointer" onclick="openBook('rules')">📌</span>
-        <span style="font-size:28px; cursor:pointer" onclick="openBook('notes')">📄</span>
+        <span style="font-size:28px; cursor:pointer" onclick="openBook('notes')">📝</span>
         <input id="in-f" placeholder="word">
         <input id="in-b" placeholder="transl.">
-        <button class="lang-btn" id="add-btn" onclick="add()">+</button>
+        <button class="lang-btn" onclick="add()">+</button>
     </div>
 
     <div id="rules-book" class="notebook" style="background-color: var(--slate-grey);">
@@ -177,9 +187,9 @@
         </div>
         <div class="notebook-content" style="background-color: var(--vanilla-cream);">
             <div class="page-ctrl">
-                <button onclick="changePage('rules', -1)">←</button>
+                <button class="lang-btn" onclick="changePage('rules', -1)">←</button>
                 <span id="rules-pg-num" style="color: #333">Стр. 1</span>
-                <button onclick="changePage('rules', 1)">→</button>
+                <button class="lang-btn" onclick="changePage('rules', 1)">→</button>
             </div>
             <div id="rules-editor" class="editor" contenteditable="true" oninput="save('rules')"></div>
             <div class="markers">
@@ -197,9 +207,9 @@
         </div>
         <div class="notebook-content" style="background-color: var(--warm-cream);">
             <div class="page-ctrl">
-                <button onclick="changePage('notes', -1)">←</button>
+                <button class="lang-btn" onclick="changePage('notes', -1)">←</button>
                 <span id="notes-pg-num" style="color: #333">Стр. 1</span>
-                <button onclick="changePage('notes', 1)">→</button>
+                <button class="lang-btn" onclick="changePage('notes', 1)">→</button>
             </div>
             <div id="notes-editor" class="editor" contenteditable="true" oninput="save('notes')"></div>
             <div class="markers">
@@ -211,16 +221,20 @@
     </div>
 
     <script>
+        // Инициализация данных
         let data = JSON.parse(localStorage.getItem('wordsPI_v3')) || { 
-            en:[{f:"vegetarians",b:"Вегетарианцы"}], kr:[{f:"환률", b:"вероятность"}], de:[{f:"Die Katze", b:"кошка"}] 
+            en:[{f:"Cloud",b:"Облако"}], kr:[], de:[] 
         };
         let storage = JSON.parse(localStorage.getItem('textPI_v3')) || { 
             rules:{en:[""],kr:[""],de:[""]}, notes:{en:[""],kr:[""],de:[""]} 
         };
         let curL = 'en', curIdx = 0, curPages = { rules: 0, notes: 0 };
 
+        // Загрузка
         window.addEventListener('load', () => {
-            setTimeout(() => document.getElementById('splash-screen').classList.add('splash-hidden'), 2500);
+            setTimeout(() => {
+                document.getElementById('splash-screen').classList.add('splash-hidden');
+            }, 2500);
             update();
         });
 
@@ -237,24 +251,36 @@
             
             if (!data[curL] || data[curL].length === 0) {
                 document.getElementById('f').innerText = "Пусто";
-                document.getElementById('b').innerText = "Добавь слово";
+                document.getElementById('b').innerText = "Добавь слово ниже";
                 return;
             }
 
+            // Защита от выхода за границы
             if (curIdx >= data[curL].length) curIdx = 0;
             if (curIdx < 0) curIdx = data[curL].length - 1;
 
             setTimeout(() => {
                 document.getElementById('f').innerText = data[curL][curIdx].f;
                 document.getElementById('b').innerText = data[curL][curIdx].b;
-            }, 200);
+            }, 150);
         }
 
-        function nextWord() { curIdx++; update(); }
-        function prevWord() { curIdx--; update(); }
+        // Переключение карточек
+        function nextWord() { 
+            if (data[curL].length > 0) {
+                curIdx++; 
+                update(); 
+            }
+        }
+        function prevWord() { 
+            if (data[curL].length > 0) {
+                curIdx--; 
+                update(); 
+            }
+        }
 
-        function flipCard(e) { 
-            if (!e.target.closest('button')) document.getElementById('card-inner').classList.toggle('flipped'); 
+        function flipCard() { 
+            document.getElementById('card-inner').classList.toggle('flipped'); 
         }
 
         function shuffle() { 
@@ -279,13 +305,14 @@
 
         function deleteCurrentWord(e) {
             e.stopPropagation();
-            if(data[curL].length > 0) {
+            if(data[curL].length > 0 && confirm("Удалить это слово?")) {
                 data[curL].splice(curIdx, 1);
                 localStorage.setItem('wordsPI_v3', JSON.stringify(data));
                 update();
             }
         }
 
+        // Тетради
         function openBook(type) {
             document.getElementById(type+'-book').style.display = 'flex';
             document.getElementById(type==='rules'?'r-title':'n-title').innerText = curL.toUpperCase();
